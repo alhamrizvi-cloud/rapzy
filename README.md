@@ -38,7 +38,7 @@ RAPZY is a **web-based subdomain enumeration and live host scanning platform** d
 ## 📥 Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/rapzy.git
+git clone https://github.com/alhamrizvi-cloud/rapzy.git
 cd rapzy
 ```
 
