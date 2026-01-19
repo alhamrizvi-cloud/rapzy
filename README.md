@@ -1,3 +1,5 @@
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/61ebd506-f549-471d-a757-aeb4d0f00e89" />
+
 # RAPZY - Subdomain Enumeration & Live Host Scanning
 
 RAPZY is a **web-based subdomain enumeration and live host scanning platform** designed for reconnaissance and security testing. It combines **passive intelligence sources** with **active probing** to discover subdomains and identify live web services in real time.
