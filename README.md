@@ -90,8 +90,9 @@ podman build -t rapzy .
 ```bash
 podman run -d \
   --name rapzy \
-  -p 5173:5173 \
+  -p 8080:8080 \
   rapzy
+
 ```
 
 ### 3️⃣ Verify
