@@ -1,73 +1,171 @@
-# Welcome to your Lovable project
+# RAPZY - Subdomain Enumeration & Live Host Scanning
 
-## Project info
+RAPZY is a **web-based subdomain enumeration and live host scanning platform** designed for reconnaissance and security testing. It combines **passive intelligence sources** with **active probing** to discover subdomains and identify live web services in real time.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+> ⚠️ **Disclaimer**: Use RAPZY only on domains you own or have explicit permission to test.
 
-## How can I edit this code?
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+* 🔍 Passive subdomain enumeration (certificate transparency, public sources)
+* ⚡ Active DNS & HTTP probing
+* 🌐 Live host detection (HTTP / HTTPS)
+* 🖥️ Modern Web UI (Vite + React + TypeScript)
+* 📊 Real-time results display
+* ☁️ Backend-ready (API-based architecture)
+* 🐳 Fully containerized (Docker & Podman supported)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🧱 Tech Stack
 
-**Use your preferred IDE**
+**Frontend**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+* Vite
+* React
+* TypeScript
+* Tailwind CSS / shadcn-ui
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+**Backend / Services**
 
-Follow these steps:
+* Supabase (optional)
+* REST / WebSocket based scanning engine
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+**Deployment**
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+* Docker
+* Podman
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📥 Clone the Repository
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+git clone https://github.com/<your-username>/rapzy.git
+cd rapzy
+```
+
+## 🚀 Running with Docker
+
+### 1️⃣ Build the Docker image
+
+```bash
+docker build -t rapzy .
+```
+
+### 2️⃣ Run the container
+
+```bash
+docker run -d \
+  --name rapzy \
+  -p 5173:5173 \
+  rapzy
+```
+
+### 3️⃣ Access the app
+
+Open your browser and visit:
+
+```
+http://localhost:5173
+```
+
+## 🐧 Running with Podman (Rootless)
+
+> Make sure `podman` is installed and running in rootless mode.
+
+```bash
+podman info
+```
+
+Podman is fully supported and recommended for Linux users.
+
+### 1️⃣ Build the image
+
+```bash
+podman build -t rapzy .
+```
+
+### 2️⃣ Run the container
+
+```bash
+podman run -d \
+  --name rapzy \
+  -p 5173:5173 \
+  rapzy
+```
+
+### 3️⃣ Verify
+
+```bash
+podman ps
+```
+
+## 📦 Example Dockerfile
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host"]
+```
+
+## ⚙️ Environment Variables
+
+Create a `.env` file if required:
+
+```env
+VITE_API_URL=http://localhost:8080
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_key
+```
+
+## 🧪 Development (Without Containers)
+
+> Recommended only for development and debugging.
+
+### Requirements
+
+* Node.js 18+
+* npm or bun
+
+### Steps
+
+```bash
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+App will be available at:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```
+http://localhost:5173
+```
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm install
+npm run dev
+```
 
-## What technologies are used for this project?
+## 🔐 Security Notes
 
-This project is built with:
+* Rate-limiting is recommended for active scanning
+* Avoid scanning large targets from shared IPs
+* Always obtain authorization before testing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📄 License
 
-## How can I deploy this project?
+MIT License
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🙌 Credits
 
-## Can I connect a custom domain to my Lovable project?
+Built with ❤️ for security researchers and bug bounty hunters.
 
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+If you like this project, ⭐ star the repo and contribute!
