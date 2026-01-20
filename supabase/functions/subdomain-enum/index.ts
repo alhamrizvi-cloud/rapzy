@@ -101,7 +101,7 @@ async function fetchFromAlienVault(domain: string): Promise<SubdomainResult[]> {
       `https://otx.alienvault.com/api/v1/indicators/domain/${encodeURIComponent(domain)}/passive_dns`,
       {
         headers: {
-          'User-Agent': 'SubdomainFinder/1.0',
+          'User-Agent': 'RAPZY-Recon/1.0',
         },
       }
     );
@@ -125,6 +125,80 @@ async function fetchFromAlienVault(domain: string): Promise<SubdomainResult[]> {
     return Array.from(subdomains).map(sub => ({ subdomain: sub, source: 'AlienVault' }));
   } catch (error) {
     console.error('[AlienVault] Error:', error);
+    return [];
+  }
+}
+
+// ThreatCrowd API
+async function fetchFromThreatCrowd(domain: string): Promise<SubdomainResult[]> {
+  console.log(`[ThreatCrowd] Fetching subdomains for ${domain}`);
+  
+  try {
+    const response = await fetch(
+      `https://www.threatcrowd.org/searchApi/v2/domain/report/?domain=${encodeURIComponent(domain)}`,
+      {
+        headers: {
+          'User-Agent': 'RAPZY-Recon/1.0',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.log(`[ThreatCrowd] Request failed with status ${response.status}`);
+      return [];
+    }
+
+    const data = await response.json();
+    const subdomains = new Set<string>();
+
+    for (const sub of data.subdomains || []) {
+      const cleaned = sub.trim().toLowerCase();
+      if (cleaned && cleaned.endsWith(domain)) {
+        subdomains.add(cleaned);
+      }
+    }
+
+    console.log(`[ThreatCrowd] Found ${subdomains.size} unique subdomains`);
+    return Array.from(subdomains).map(sub => ({ subdomain: sub, source: 'ThreatCrowd' }));
+  } catch (error) {
+    console.error('[ThreatCrowd] Error:', error);
+    return [];
+  }
+}
+
+// URLScan.io search for subdomains
+async function fetchFromUrlScan(domain: string): Promise<SubdomainResult[]> {
+  console.log(`[URLScan] Fetching subdomains for ${domain}`);
+  
+  try {
+    const response = await fetch(
+      `https://urlscan.io/api/v1/search/?q=domain:${encodeURIComponent(domain)}&size=100`,
+      {
+        headers: {
+          'User-Agent': 'RAPZY-Recon/1.0',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      console.log(`[URLScan] Request failed with status ${response.status}`);
+      return [];
+    }
+
+    const data = await response.json();
+    const subdomains = new Set<string>();
+
+    for (const result of data.results || []) {
+      const hostname = result.page?.domain?.toLowerCase();
+      if (hostname && hostname.endsWith(domain)) {
+        subdomains.add(hostname);
+      }
+    }
+
+    console.log(`[URLScan] Found ${subdomains.size} unique subdomains`);
+    return Array.from(subdomains).map(sub => ({ subdomain: sub, source: 'URLScan.io' }));
+  } catch (error) {
+    console.error('[URLScan] Error:', error);
     return [];
   }
 }
@@ -153,14 +227,16 @@ Deno.serve(async (req) => {
     console.log(`Starting subdomain enumeration for: ${cleanDomain}`);
 
     // Fetch from all sources in parallel
-    const [crtResults, hackerTargetResults, alienVaultResults] = await Promise.all([
+    const [crtResults, hackerTargetResults, alienVaultResults, threatCrowdResults, urlScanResults] = await Promise.all([
       fetchFromCrtSh(cleanDomain),
       fetchFromHackerTarget(cleanDomain),
       fetchFromAlienVault(cleanDomain),
+      fetchFromThreatCrowd(cleanDomain),
+      fetchFromUrlScan(cleanDomain),
     ]);
 
     // Merge and deduplicate
-    const allResults = [...crtResults, ...hackerTargetResults, ...alienVaultResults];
+    const allResults = [...crtResults, ...hackerTargetResults, ...alienVaultResults, ...threatCrowdResults, ...urlScanResults];
     const uniqueSubdomains = new Map<string, SubdomainResult>();
 
     for (const result of allResults) {
