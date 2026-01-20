@@ -101,32 +101,6 @@ podman run -d \
 podman ps
 ```
 
-## 📦 Example Dockerfile
-
-```dockerfile
-FROM node:20-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-EXPOSE 5173
-
-CMD ["npm", "run", "dev", "--", "--host"]
-```
-
-## ⚙️ Environment Variables
-
-Create a `.env` file if required:
-
-```env
-VITE_API_URL=http://localhost:8080
-SUPABASE_URL=your_supabase_url
-SUPABASE_ANON_KEY=your_key
-```
 
 ## 🧪 Development (Without Containers)
 
